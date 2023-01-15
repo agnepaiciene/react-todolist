@@ -1,13 +1,16 @@
 
 import Card from "../../ui/card";
 import TaskItem from "./taskitem";
+import TasksContext from "../../context/productsContext";
+import {useContext} from "react";
 
 
 const ToDoList=(props)=>{
 
-    let todoList=[];
-    props.tasks.forEach((task, index)=>{
+    const tasksCtx=useContext(TasksContext);
 
+    let todoList=[];
+    tasksCtx.tasks.forEach((task, index)=>{
         todoList.push(
             (<TaskItem key={index} task={ {...task, key:index} } onTrintiTask={props.onTrintiTask}></TaskItem>)
         );
@@ -21,6 +24,7 @@ const ToDoList=(props)=>{
                         <ul className="list-group m-2">
                             {todoList}
                         </ul>
+            { tasksCtx.tasks.length===0 ? <div className="alert alert-info">Užduočių nėra</div> : " "}
         </Card>
 
 

@@ -1,30 +1,34 @@
 
-import {useState} from "react";
+import {useContext, useState} from "react";
 import Card from "../../ui/card";
+import TasksContext from "../../context/productsContext";
 const AddTask=(props)=>{
 
     const initValue={
         pavadinimas:"",
         tipas:""
     }
-
     const [task, setTask]=useState(initValue);
+    const [pavadinimasTouched, setPavadinimasTouched]=useState(false);
+    const tasksCtx=useContext(TasksContext);
+    const isPavadinimasInValid=task.pavadinimas=="";
+
     const  onFormSubmit=(event)=>{
         event.preventDefault();
-        props.onAddTask(task);
+        if (isPavadinimasInValid) return;
+        tasksCtx.addTask(task);
+        //props.onAddTask(task);
         setTask(initValue);
-        console.log("Pridedame uzduoti");
+        setPavadinimasTouched(false);
 
     }
 
     const onPavadinimasChange=(event)=>{
-
         setTask({
             ...task,
             pavadinimas: event.target.value,
         });
     }
-    console.log(task);
 
     const onTipasChange=(event)=>{
         setTask({
@@ -39,8 +43,8 @@ const AddTask=(props)=>{
             <form onSubmit={onFormSubmit}>
                 <div className="mb-3 ms-2 me-2">
                     <label className="form-label fw-bold">Užduoties pavadinimas</label>
-                    <input type="text" className="form-control"onChange={onPavadinimasChange} value={task.pavadinimas}/>
-
+                    <input type="text" className="form-control" onBlur={ ()=>setPavadinimasTouched(true) } onChange={onPavadinimasChange} value={task.pavadinimas}/>
+                    { isPavadinimasInValid && pavadinimasTouched? <div className="alert alert-danger">Pavadinimas neteisingas</div>:" "}
                 </div>
                 <div className="mb-3 ms-2 me-2">
                     <label className="form-label fw-bold ">Užduoties tipas</label>
